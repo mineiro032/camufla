@@ -198,7 +198,7 @@ const $ = id => document.getElementById(id);
 const MAX_CTV = 10;
 
 const state = {
-  ctvs: [],          // {id, img, name, processed: null}
+  ctvs: [],
   b: null,
   pb: null,
   nameB: "white",
@@ -209,6 +209,9 @@ let history = JSON.parse(localStorage.getItem("imagelab_history_v2") || "[]");
 let nextId = 1;
 let timerInterval = null;
 let processStart = 0;
+let currentDone = 0;
+let currentTotal = 0;
+let currentLabel = "";
 
 function setupDrop(box, input, multi = false) {
   box.onclick = () => input.click();
@@ -371,8 +374,7 @@ function renderCtvList() {
 }
 
 function formatTime(ms) {
-  const s = (ms / 1000).toFixed(1);
-  return s + "s";
+  return (ms / 1000).toFixed(1) + "s";
 }
 
 function startTimer() {
@@ -381,9 +383,16 @@ function startTimer() {
   $("progressBar").style.width = "0%";
 
   if (timerInterval) clearInterval(timerInterval);
+
   timerInterval = setInterval(() => {
+    if (!state.isProcessing) return;
     const elapsed = performance.now() - processStart;
-    // status is updated by the process loop; just keep timer fresh if needed
+    const pct = currentTotal ? Math.round((currentDone / currentTotal) * 100) : 0;
+    $("progressBar").style.width = pct + "%";
+    $("status").innerHTML =
+      `Processando <strong>${currentDone}/${currentTotal}</strong>` +
+      (currentLabel ? ` — <em>${currentLabel}</em>` : "") +
+      `… <span class="timer">${formatTime(elapsed)}</span>`;
   }, 100);
 }
 
@@ -425,48 +434,56 @@ $("process").onclick = async () => {
   $("downloadB").disabled = true;
   $("clearCtv").disabled = true;
 
+  currentTotal = (needCtv ? state.ctvs.length : 0) + (needWhite ? 1 : 0);
+  currentDone = 0;
+  currentLabel = "iniciando…";
+
   startTimer();
+  await new Promise(r => setTimeout(r, 50));
 
-  const totalSteps = (needCtv ? state.ctvs.length : 0) + (needWhite ? 1 : 0);
-  let done = 0;
+  try {
+    if (needCtv) {
+      for (let i = 0; i < state.ctvs.length; i++) {
+        const item = state.ctvs[i];
+        currentLabel = item.name || `CTV ${i + 1}`;
+        item._processing = true;
+        renderCtvList();
 
-  const updateProgress = () => {
-    const pct = totalSteps ? Math.round((done / totalSteps) * 100) : 100;
-    $("progressBar").style.width = pct + "%";
-    const elapsed = performance.now() - processStart;
-    $("status").innerHTML = `Processando <strong>${done}/${totalSteps}</strong>… <span class="timer">${formatTime(elapsed)}</span>`;
-  };
+        await new Promise(r => setTimeout(r, 40));
 
-  updateProgress();
+        try {
+          item.processed = processImage(item.img);
+        } catch (err) {
+          console.error("Erro ao processar", item.name, err);
+          item.processed = null;
+        }
 
-  // Processa CTVs uma por uma (libera download imediatamente)
-  if (needCtv) {
-    for (let i = 0; i < state.ctvs.length; i++) {
-      const item = state.ctvs[i];
-      item._processing = true;
-      renderCtvList(); // mostra borda "processing"
-
-      // yield para a UI atualizar
-      await new Promise(r => setTimeout(r, 30));
-
-      item.processed = processImage(item.img);
-      item._processing = false;
-      done++;
-      updateProgress();
-      renderCtvList(); // libera botão Baixar desta imagem
+        item._processing = false;
+        currentDone++;
+        renderCtvList();
+        await new Promise(r => setTimeout(r, 30));
+      }
     }
-  }
 
-  // Processa White
-  if (needWhite) {
-    await new Promise(r => setTimeout(r, 30));
-    state.pb = processImage(state.b);
-    const box = $("previewB");
-    box.innerHTML = "";
-    box.appendChild(state.pb);
-    $("downloadB").disabled = false;
-    done++;
-    updateProgress();
+    if (needWhite) {
+      currentLabel = state.nameB || "White";
+      await new Promise(r => setTimeout(r, 40));
+
+      try {
+        state.pb = processImage(state.b);
+        const box = $("previewB");
+        box.innerHTML = "";
+        box.appendChild(state.pb);
+        $("downloadB").disabled = false;
+      } catch (err) {
+        console.error("Erro ao processar White", err);
+        state.pb = null;
+      }
+      currentDone++;
+    }
+  } catch (e) {
+    console.error(e);
+    $("status").textContent = "Erro inesperado no processamento.";
   }
 
   const totalTime = performance.now() - processStart;
@@ -478,12 +495,12 @@ $("process").onclick = async () => {
   $("clearCtv").disabled = false;
   $("downloadAll").disabled = !state.ctvs.some(x => x.processed);
 
-  $("status").innerHTML = `Concluído! <strong>${done}</strong> imagem(ns) em <span class="timer">${formatTime(totalTime)}</span>`;
-  
-  // esconde a barra depois de 2s
+  $("status").innerHTML =
+    `Concluído! <strong>${currentDone}</strong> imagem(ns) em <span class="timer">${formatTime(totalTime)}</span>`;
+
   setTimeout(() => {
     $("progressWrap").style.display = "none";
-  }, 2200);
+  }, 2500);
 };
 
 function processImage(img) {
@@ -493,15 +510,15 @@ function processImage(img) {
   const h = Math.max(1, Math.round(img.naturalHeight * scale));
   c.width = w;
   c.height = h;
-  const ctx = c.getContext("2d");
+  const ctx = c.getContext("2d", { willReadFrequently: true });
   const blur = parseFloat($("blur").value);
 
   ctx.filter = `blur(${blur}px) brightness(${100 + +$("bright").value}%) contrast(${100 + +$("contrast").value}%) saturate(${100 + +$("sat").value}%)`;
   ctx.drawImage(img, 0, 0, w, h);
   ctx.filter = "none";
 
-  let d = ctx.getImageData(0, 0, w, h);
-  let p = d.data;
+  const d = ctx.getImageData(0, 0, w, h);
+  const p = d.data;
   const noise = +$("noise").value / 100;
   const sharp = +$("sharp").value / 100;
 
