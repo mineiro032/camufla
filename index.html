@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ImageLab — CTV Multi & White</title>
 <style>
-:root{--bg:#090b10;--panel:#12151d;--panel2:#181c26;--border:#292f3b;--text:#f5f7fb;--muted:#8e96a6;--accent:#705dfc;--accent2:#9185ff;--good:#37d39a}
+:root{--bg:#090b10;--panel:#12151d;--border:#292f3b;--text:#f5f7fb;--muted:#8e96a6;--accent:#705dfc;--accent2:#9185ff;--good:#37d39a}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#18152d 0,#090b10 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
 .app{display:flex;min-height:100vh}.sidebar{width:245px;border-right:1px solid var(--border);padding:24px 16px;background:rgba(10,12,17,.94);position:fixed;inset:0 auto 0 0}.logo{font-size:21px;font-weight:800;padding:8px 12px 28px}.logo span{color:var(--accent2)}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#aeb5c3;text-align:left;padding:12px;border-radius:10px;font-size:14px;cursor:pointer}.nav button.active,.nav button:hover{background:#1d2030;color:#fff}.note{position:absolute;bottom:20px;width:210px;color:#687080;font-size:11px;line-height:1.5}
 main{margin-left:245px;flex:1;padding:30px;max-width:1500px;width:100%;margin-right:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{font-size:27px;margin:0}.top p{margin:6px 0 0;color:var(--muted);font-size:13px}.badge{padding:8px 11px;background:#171a24;border:1px solid var(--border);border-radius:20px;color:#aeb5c3;font-size:12px}
@@ -28,9 +28,9 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px;width:100%;margin-ri
 .ctvItem .badge-proc{position:absolute;top:6px;left:6px;background:#37d39a;color:#062016;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
 .previewBox{background:#090b10;border-radius:12px;min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden}.previewBox img{max-width:100%;max-height:320px;display:block}.previewTitle{font-size:11px;color:#aab1bf;margin:0 0 7px;font-weight:700}.empty{color:#596170;font-size:12px;text-align:center;padding:20px}
 .section{padding-bottom:17px;margin-bottom:17px;border-bottom:1px solid var(--border)}.section:last-child{border:0;margin:0;padding:0}.label{font-size:12px;color:#aab1bf;margin-bottom:9px;font-weight:600}.row{display:flex;justify-content:space-between;align-items:center}.control{margin-bottom:17px}.value{font-size:11px;color:#aeb5c3}.range{width:100%;accent-color:var(--accent);cursor:pointer}.select,.btn{width:100%;border:1px solid var(--border);background:#10131a;color:#fff;border-radius:10px;padding:11px 12px;outline:none}.btn{cursor:pointer;font-weight:700}.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0}.btn.secondary{background:#1b1f2a}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.status{margin-top:12px;font-size:12px;color:#8e96a6;min-height:18px;line-height:1.4}
+.status{margin-top:12px;font-size:12px;color:#8e96a6;min-height:18px;line-height:1.45}
 .progressWrap{display:none;margin-top:10px;background:#0d1016;border-radius:8px;overflow:hidden;height:6px}
-.progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--good));transition:width .25s ease}
+.progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--good));transition:width .2s ease}
 .timer{font-variant-numeric:tabular-nums;color:var(--accent2)}
 .history,.settings{display:none}.historyList{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}.hist{background:#12151d;border:1px solid var(--border);border-radius:12px;padding:10px}.hist img{width:100%;height:150px;object-fit:cover;border-radius:8px;background:#090b10}.hist div{font-size:11px;color:#8e96a6;margin-top:8px}
 .countBadge{display:inline-block;background:#1d2030;border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--accent2);margin-left:6px}
@@ -186,7 +186,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px;width:100%;margin-ri
   <div class="top"><div><h1>Configurações</h1><p>Preferências locais.</p></div></div>
   <div class="card">
     <div class="label">Privacidade</div>
-    <p style="font-size:12px;color:#8e96a6;line-height:1.6">O processamento é feito no navegador usando Canvas. A página não envia automaticamente as imagens para um servidor e não implementa detecção de bots, crawlers ou entrega condicional de conteúdo.</p>
+    <p style="font-size:12px;color:#8e96a6;line-height:1.6">O processamento é feito no navegador usando Canvas. A página não envia automaticamente as imagens para um servidor.</p>
   </div>
 </section>
 </main>
@@ -194,7 +194,6 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px;width:100%;margin-ri
 
 <script>
 const $ = id => document.getElementById(id);
-
 const MAX_CTV = 10;
 
 const state = {
@@ -213,12 +212,12 @@ let currentDone = 0;
 let currentTotal = 0;
 let currentLabel = "";
 
-function setupDrop(box, input, multi = false) {
+function setupDrop(box, input, multi) {
   box.onclick = () => input.click();
-  ["dragenter", "dragover"].forEach(ev =>
+  ["dragenter","dragover"].forEach(ev =>
     box.addEventListener(ev, e => { e.preventDefault(); box.classList.add("drag"); })
   );
-  ["dragleave", "drop"].forEach(ev =>
+  ["dragleave","drop"].forEach(ev =>
     box.addEventListener(ev, e => { e.preventDefault(); box.classList.remove("drag"); })
   );
   box.addEventListener("drop", e => {
@@ -238,7 +237,7 @@ setupDrop($("dropA"), $("fileA"), true);
 setupDrop($("dropB"), $("fileB"), false);
 
 function isValidImage(f) {
-  return /^image\/(jpeg|png|webp)$/.test(f.type) && f.size <= 20 * 1024 * 1024;
+  return /^image\/(jpeg|png|webp)$/i.test(f.type) && f.size <= 20 * 1024 * 1024;
 }
 
 function loadMultiple(files) {
@@ -248,16 +247,13 @@ function loadMultiple(files) {
     $("status").textContent = "Nenhum arquivo válido. Use JPG, PNG ou WebP de até 20 MB.";
     return;
   }
-
   const space = MAX_CTV - state.ctvs.length;
   if (space <= 0) {
     $("status").textContent = `Limite de ${MAX_CTV} imagens CTV atingido.`;
     return;
   }
-
   const toLoad = valid.slice(0, space);
   let loaded = 0;
-
   toLoad.forEach(f => {
     const r = new FileReader();
     r.onload = () => {
@@ -265,9 +261,10 @@ function loadMultiple(files) {
       img.onload = () => {
         state.ctvs.push({
           id: nextId++,
-          img,
-          name: f.name.replace(/\.[^.]+$/, ""),
-          processed: null
+          img: img,
+          name: f.name.replace(/\.[^.]+$/, "") || ("ctv_" + nextId),
+          processed: null,
+          _processing: false
         });
         loaded++;
         if (loaded === toLoad.length) {
@@ -275,16 +272,14 @@ function loadMultiple(files) {
           $("status").textContent = `${toLoad.length} CTV(s) adicionada(s). Total: ${state.ctvs.length}/${MAX_CTV}`;
         }
       };
+      img.onerror = () => {
+        loaded++;
+        $("status").textContent = "Erro ao carregar uma das imagens.";
+      };
       img.src = r.result;
     };
     r.readAsDataURL(f);
   });
-
-  if (valid.length > space) {
-    setTimeout(() => {
-      $("status").textContent = `Apenas ${space} imagem(ns) adicionada(s). Limite de ${MAX_CTV} atingido.`;
-    }, 400);
-  }
 }
 
 function loadWhite(f) {
@@ -298,7 +293,7 @@ function loadWhite(f) {
     const img = new Image();
     img.onload = () => {
       state.b = img;
-      state.nameB = f.name.replace(/\.[^.]+$/, "");
+      state.nameB = f.name.replace(/\.[^.]+$/, "") || "white";
       state.pb = null;
       $("downloadB").disabled = true;
       const box = $("previewB");
@@ -314,8 +309,8 @@ function loadWhite(f) {
 function renderCtvList() {
   const list = $("ctvList");
   const empty = $("ctvEmpty");
-  $("ctvCount").textContent = `${state.ctvs.length}/${MAX_CTV}`;
-  $("ctvListTitle").textContent = `(${state.ctvs.length})`;
+  $("ctvCount").textContent = state.ctvs.length + "/" + MAX_CTV;
+  $("ctvListTitle").textContent = "(" + state.ctvs.length + ")";
 
   if (!state.ctvs.length) {
     list.innerHTML = "";
@@ -331,31 +326,29 @@ function renderCtvList() {
   state.ctvs.forEach(item => {
     const div = document.createElement("div");
     div.className = "ctvItem" + (item.processed ? " processed" : "") + (item._processing ? " processing" : "");
-    div.dataset.id = item.id;
 
-    const src = item.processed
-      ? item.processed.toDataURL("image/jpeg", 0.72)
-      : item.img.src;
+    let src = item.img.src;
+    try {
+      if (item.processed) src = item.processed.toDataURL("image/jpeg", 0.7);
+    } catch (e) {}
 
-    div.innerHTML = `
-      ${item.processed ? '<span class="badge-proc">OK</span>' : ''}
-      <img src="${src}" alt="${item.name}">
-      <div class="meta">
-        <div class="name" title="${item.name}">${item.name}</div>
-        <div class="btns">
-          <button class="dl" data-id="${item.id}" ${item.processed ? "" : "disabled"}>Baixar</button>
-          <button class="remove" data-id="${item.id}">✕</button>
-        </div>
-      </div>
-    `;
+    div.innerHTML =
+      (item.processed ? '<span class="badge-proc">OK</span>' : "") +
+      '<img src="' + src + '" alt="">' +
+      '<div class="meta">' +
+        '<div class="name" title="' + item.name + '">' + item.name + "</div>" +
+        '<div class="btns">' +
+          '<button class="dl" data-id="' + item.id + '"' + (item.processed ? "" : " disabled") + ">Baixar</button>" +
+          '<button class="remove" data-id="' + item.id + '">✕</button>' +
+        "</div>" +
+      "</div>";
     list.appendChild(div);
   });
 
   list.querySelectorAll(".remove").forEach(btn => {
     btn.onclick = () => {
       if (state.isProcessing) return;
-      const id = +btn.dataset.id;
-      state.ctvs = state.ctvs.filter(x => x.id !== id);
+      state.ctvs = state.ctvs.filter(x => x.id !== +btn.dataset.id);
       renderCtvList();
       $("status").textContent = "Imagem removida.";
     };
@@ -363,14 +356,12 @@ function renderCtvList() {
 
   list.querySelectorAll(".dl").forEach(btn => {
     btn.onclick = () => {
-      const id = +btn.dataset.id;
-      const item = state.ctvs.find(x => x.id === id);
+      const item = state.ctvs.find(x => x.id === +btn.dataset.id);
       if (item && item.processed) download(item.processed, item.name);
     };
   });
 
-  const hasProcessed = state.ctvs.some(x => x.processed);
-  $("downloadAll").disabled = !hasProcessed || state.isProcessing;
+  $("downloadAll").disabled = !state.ctvs.some(x => x.processed) || state.isProcessing;
 }
 
 function formatTime(ms) {
@@ -381,18 +372,16 @@ function startTimer() {
   processStart = performance.now();
   $("progressWrap").style.display = "block";
   $("progressBar").style.width = "0%";
-
   if (timerInterval) clearInterval(timerInterval);
-
   timerInterval = setInterval(() => {
     if (!state.isProcessing) return;
     const elapsed = performance.now() - processStart;
     const pct = currentTotal ? Math.round((currentDone / currentTotal) * 100) : 0;
     $("progressBar").style.width = pct + "%";
     $("status").innerHTML =
-      `Processando <strong>${currentDone}/${currentTotal}</strong>` +
-      (currentLabel ? ` — <em>${currentLabel}</em>` : "") +
-      `… <span class="timer">${formatTime(elapsed)}</span>`;
+      "Processando <strong>" + currentDone + "/" + currentTotal + "</strong>" +
+      (currentLabel ? " — <em>" + currentLabel + "</em>" : "") +
+      "… <span class=\"timer\">" + formatTime(elapsed) + "</span>";
   }, 100);
 }
 
@@ -407,7 +396,7 @@ function stopTimer() {
   $(id).addEventListener("input", () => {
     const v = $(id).value;
     $(id + "V").textContent =
-      id === "noise" || id === "sharp" || id === "quality" ? v + "%" :
+      (id === "noise" || id === "sharp" || id === "quality") ? v + "%" :
       id === "blur" ? v + "px" : v;
   });
 });
@@ -415,16 +404,21 @@ function stopTimer() {
 $("process").onclick = async () => {
   if (state.isProcessing) return;
 
-  const target = $("target").value;
-  const needCtv = target === "a" || target === "both";
-  const needWhite = target === "b" || target === "both";
+  const target = ($("target") && $("target").value) || "both";
+  const needCtv = (target === "a" || target === "both");
+  const needWhite = (target === "b" || target === "both");
 
-  if (needCtv && !state.ctvs.length) {
-    $("status").textContent = "Carregue pelo menos uma imagem CTV.";
+  // Validação forte
+  if (needCtv && state.ctvs.length === 0) {
+    $("status").textContent = "Carregue pelo menos 1 imagem CTV.";
     return;
   }
   if (needWhite && !state.b) {
-    $("status").textContent = "Carregue a imagem White primeiro.";
+    $("status").textContent = "Carregue a imagem White.";
+    return;
+  }
+  if (!needCtv && !needWhite) {
+    $("status").textContent = "Selecione o que deseja processar.";
     return;
   }
 
@@ -436,39 +430,42 @@ $("process").onclick = async () => {
 
   currentTotal = (needCtv ? state.ctvs.length : 0) + (needWhite ? 1 : 0);
   currentDone = 0;
-  currentLabel = "iniciando…";
+  currentLabel = "preparando…";
 
   startTimer();
-  await new Promise(r => setTimeout(r, 50));
+  await new Promise(r => setTimeout(r, 80));
 
   try {
     if (needCtv) {
       for (let i = 0; i < state.ctvs.length; i++) {
         const item = state.ctvs[i];
-        currentLabel = item.name || `CTV ${i + 1}`;
+        if (!item || !item.img) {
+          currentDone++;
+          continue;
+        }
+
+        currentLabel = item.name || ("CTV " + (i + 1));
         item._processing = true;
         renderCtvList();
-
-        await new Promise(r => setTimeout(r, 40));
+        await new Promise(r => setTimeout(r, 50));
 
         try {
           item.processed = processImage(item.img);
         } catch (err) {
-          console.error("Erro ao processar", item.name, err);
+          console.error("Erro CTV:", item.name, err);
           item.processed = null;
         }
 
         item._processing = false;
         currentDone++;
-        renderCtvList();
-        await new Promise(r => setTimeout(r, 30));
+        renderCtvList(); // libera o botão Baixar desta imagem
+        await new Promise(r => setTimeout(r, 40));
       }
     }
 
-    if (needWhite) {
+    if (needWhite && state.b) {
       currentLabel = state.nameB || "White";
-      await new Promise(r => setTimeout(r, 40));
-
+      await new Promise(r => setTimeout(r, 50));
       try {
         state.pb = processImage(state.b);
         const box = $("previewB");
@@ -476,14 +473,14 @@ $("process").onclick = async () => {
         box.appendChild(state.pb);
         $("downloadB").disabled = false;
       } catch (err) {
-        console.error("Erro ao processar White", err);
+        console.error("Erro White:", err);
         state.pb = null;
       }
       currentDone++;
     }
   } catch (e) {
     console.error(e);
-    $("status").textContent = "Erro inesperado no processamento.";
+    $("status").textContent = "Erro inesperado: " + (e.message || e);
   }
 
   const totalTime = performance.now() - processStart;
@@ -495,41 +492,56 @@ $("process").onclick = async () => {
   $("clearCtv").disabled = false;
   $("downloadAll").disabled = !state.ctvs.some(x => x.processed);
 
-  $("status").innerHTML =
-    `Concluído! <strong>${currentDone}</strong> imagem(ns) em <span class="timer">${formatTime(totalTime)}</span>`;
+  if (currentDone === 0) {
+    $("status").textContent = "Nenhuma imagem foi processada. Recarregue as imagens e tente de novo.";
+  } else {
+    $("status").innerHTML =
+      "Concluído! <strong>" + currentDone + "</strong> imagem(ns) em <span class=\"timer\">" + formatTime(totalTime) + "</span>";
+  }
 
-  setTimeout(() => {
-    $("progressWrap").style.display = "none";
-  }, 2500);
+  setTimeout(() => { $("progressWrap").style.display = "none"; }, 3000);
 };
 
 function processImage(img) {
-  const scale = parseFloat($("scale").value);
-  const c = document.createElement("canvas");
+  if (!img || !img.naturalWidth) {
+    throw new Error("Imagem inválida ou ainda não carregada");
+  }
+
+  const scale = parseFloat($("scale").value) || 1;
   const w = Math.max(1, Math.round(img.naturalWidth * scale));
   const h = Math.max(1, Math.round(img.naturalHeight * scale));
+
+  const c = document.createElement("canvas");
   c.width = w;
   c.height = h;
   const ctx = c.getContext("2d", { willReadFrequently: true });
-  const blur = parseFloat($("blur").value);
 
-  ctx.filter = `blur(${blur}px) brightness(${100 + +$("bright").value}%) contrast(${100 + +$("contrast").value}%) saturate(${100 + +$("sat").value}%)`;
+  const blur = parseFloat($("blur").value) || 0;
+  const bright = 100 + (+$("bright").value || 0);
+  const contrast = 100 + (+$("contrast").value || 0);
+  const sat = 100 + (+$("sat").value || 0);
+
+  ctx.filter = "blur(" + blur + "px) brightness(" + bright + "%) contrast(" + contrast + "%) saturate(" + sat + "%)";
   ctx.drawImage(img, 0, 0, w, h);
   ctx.filter = "none";
 
-  const d = ctx.getImageData(0, 0, w, h);
-  const p = d.data;
-  const noise = +$("noise").value / 100;
-  const sharp = +$("sharp").value / 100;
+  const noise = (+$("noise").value || 0) / 100;
+  const sharp = (+$("sharp").value || 0) / 100;
 
-  if (noise || sharp) {
-    for (let i = 0; i < p.length; i += 4) {
-      const n = noise * (Math.random() - 0.5) * 255;
-      p[i]     = Math.max(0, Math.min(255, p[i] + n));
-      p[i + 1] = Math.max(0, Math.min(255, p[i + 1] + n));
-      p[i + 2] = Math.max(0, Math.min(255, p[i + 2] + n));
+  if (noise > 0 || sharp > 0) {
+    const d = ctx.getImageData(0, 0, w, h);
+    const p = d.data;
+
+    if (noise > 0) {
+      for (let i = 0; i < p.length; i += 4) {
+        const n = noise * (Math.random() - 0.5) * 255;
+        p[i]     = Math.max(0, Math.min(255, p[i] + n));
+        p[i + 1] = Math.max(0, Math.min(255, p[i + 1] + n));
+        p[i + 2] = Math.max(0, Math.min(255, p[i + 2] + n));
+      }
     }
-    if (sharp) {
+
+    if (sharp > 0) {
       const cp = new Uint8ClampedArray(p);
       const s = sharp * 0.55;
       for (let y = 1; y < h - 1; y++) {
@@ -545,22 +557,25 @@ function processImage(img) {
         }
       }
     }
+
+    ctx.putImageData(d, 0, 0);
   }
-  ctx.putImageData(d, 0, 0);
+
   return c;
 }
 
 function download(canvas, name) {
   if (!canvas) return;
-  const type = $("format").value;
-  const q = +$("quality").value / 100;
+  const type = $("format").value || "image/jpeg";
+  const q = (+$("quality").value || 90) / 100;
   canvas.toBlob(blob => {
+    if (!blob) return;
     const a = document.createElement("a");
     const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
     a.href = URL.createObjectURL(blob);
-    a.download = name + "_processada." + ext;
+    a.download = (name || "imagem") + "_processada." + ext;
     a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }, type, q);
 }
 
@@ -568,9 +583,9 @@ $("downloadAll").onclick = () => {
   const items = state.ctvs.filter(x => x.processed);
   if (!items.length) return;
   items.forEach((item, i) => {
-    setTimeout(() => download(item.processed, item.name), i * 200);
+    setTimeout(() => download(item.processed, item.name), i * 220);
   });
-  $("status").textContent = `Baixando ${items.length} CTV(s)…`;
+  $("status").textContent = "Baixando " + items.length + " CTV(s)…";
 };
 
 $("downloadB").onclick = () => download(state.pb, state.nameB);
@@ -586,21 +601,25 @@ $("save").onclick = () => {
   let count = 0;
   state.ctvs.forEach(item => {
     if (item.processed) {
-      history.unshift({
-        src: item.processed.toDataURL("image/jpeg", 0.82),
-        name: item.name + " — CTV",
-        date: new Date().toLocaleString("pt-BR")
-      });
-      count++;
+      try {
+        history.unshift({
+          src: item.processed.toDataURL("image/jpeg", 0.8),
+          name: item.name + " — CTV",
+          date: new Date().toLocaleString("pt-BR")
+        });
+        count++;
+      } catch (e) {}
     }
   });
   if (state.pb) {
-    history.unshift({
-      src: state.pb.toDataURL("image/jpeg", 0.82),
-      name: state.nameB + " — White",
-      date: new Date().toLocaleString("pt-BR")
-    });
-    count++;
+    try {
+      history.unshift({
+        src: state.pb.toDataURL("image/jpeg", 0.8),
+        name: state.nameB + " — White",
+        date: new Date().toLocaleString("pt-BR")
+      });
+      count++;
+    } catch (e) {}
   }
   if (!count) {
     $("status").textContent = "Processe pelo menos uma imagem primeiro.";
@@ -608,14 +627,14 @@ $("save").onclick = () => {
   }
   history = history.slice(0, 40);
   localStorage.setItem("imagelab_history_v2", JSON.stringify(history));
-  $("status").textContent = `${count} resultado(s) salvo(s) no histórico.`;
+  $("status").textContent = count + " resultado(s) salvo(s) no histórico.";
 };
 
 $("reset").onclick = () => {
   if (state.isProcessing) return;
   ["noise","bright","contrast","sat","sharp","blur"].forEach(id => $(id).value = 0);
   $("quality").value = 90;
-  $("scale").value = 1;
+  $("scale").value = "1";
   ["noise","bright","contrast","sat","sharp","blur","quality"].forEach(id =>
     $(id).dispatchEvent(new Event("input"))
   );
@@ -644,7 +663,7 @@ function renderHistory() {
   history.forEach(x => {
     const d = document.createElement("div");
     d.className = "hist";
-    d.innerHTML = `<img src="${x.src}"><div>${x.name}<br>${x.date}</div>`;
+    d.innerHTML = "<img src=\"" + x.src + "\"><div>" + x.name + "<br>" + x.date + "</div>";
     list.appendChild(d);
   });
 }
