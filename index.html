@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ImageLab — CTV + Pixel Anti-Zoom Nítido</title>
+<title>ImageLab — CTV + Camuflagem estilo Camufla Ads</title>
 <style>
 :root{--bg:#090b10;--border:#292f3b;--text:#f5f7fb;--muted:#8e96a6;--accent:#705dfc;--accent2:#9185ff;--good:#37d39a}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#18152d 0,#090b10 45%);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh}
@@ -75,14 +75,14 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     <button data-page="history">🕘 Histórico</button>
     <button data-page="settings">⚙️ Configurações</button>
   </div>
-  <div class="note">Processamento 100% local.<br>Pixel anti-zoom nítido (sem blur).</div>
+  <div class="note">Camuflagem estilo Camufla Ads.<br>Processamento 100% local.</div>
 </aside>
 <main>
 <section id="editor">
   <div class="top">
     <div>
-      <h1>Editor CTV + Mistura White</h1>
-      <p>Até <strong>10 CTVs</strong> + 1 White + Pixelização nítida anti-zoom</p>
+      <h1>Editor CTV + Camuflagem</h1>
+      <p>Até <strong>10 CTVs</strong> + White + Camuflagem estilo Camufla Ads</p>
     </div>
     <div class="badge">● Local</div>
   </div>
@@ -118,7 +118,6 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
           <div class="row"><span class="label">Intensidade da mistura</span><span class="value" id="mixV">35%</span></div>
           <input class="range" id="mix" type="range" min="0" max="100" value="35">
         </div>
-        <div class="hint">0% = só CTV · 50% = metade/metade · 100% = só White</div>
       </div>
       <div class="section">
         <div class="label">Modo de mistura</div>
@@ -130,6 +129,23 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
           <option value="soft-light">Soft Light</option>
         </select>
       </div>
+
+      <!-- CAMUFLAGEM ESTILO CAMUFLA ADS -->
+      <div class="section">
+        <div class="label">Camuflagem (estilo Camufla Ads)</div>
+        <select class="select" id="camoLevel">
+          <option value="0">Desligada</option>
+          <option value="1">Básica</option>
+          <option value="2" selected>Normal</option>
+          <option value="3">Agressiva</option>
+        </select>
+        <div class="hint" style="margin-top:8px">
+          <strong>Básica</strong> → alterações mínimas<br>
+          <strong>Normal</strong> → equilíbrio (recomendado)<br>
+          <strong>Agressiva</strong> → mudanças mais fortes nos pixels
+        </div>
+      </div>
+
       <div class="section">
         <div class="label">Ajustes visuais</div>
         <div class="control"><div class="row"><span class="label">Granulação</span><span class="value" id="noiseV">0%</span></div><input class="range" id="noise" type="range" min="0" max="100" value="0"></div>
@@ -152,25 +168,13 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       <div class="section">
         <div class="label">Exportação</div>
         <select class="select" id="format">
-          <option value="image/png">PNG (recomendado)</option>
+          <option value="image/png" selected>PNG (recomendado)</option>
           <option value="image/jpeg">JPG</option>
           <option value="image/webp">WebP</option>
         </select>
         <div style="height:8px"></div>
         <div class="row"><span class="label">Qualidade</span><span class="value" id="qualityV">95%</span></div>
         <input class="range" id="quality" type="range" min="10" max="100" value="95">
-        <div style="height:14px"></div>
-        <div class="control">
-          <div class="row"><span class="label">Tamanho do bloco (anti-zoom)</span><span class="value" id="pixelV">Off</span></div>
-          <input class="range" id="pixel" type="range" min="0" max="16" value="0">
-        </div>
-        <div class="hint">
-          <strong>0</strong> = desligado<br>
-          <strong>2~4</strong> = quase invisível (alta qualidade)<br>
-          <strong>5~8</strong> = blocos visíveis no zoom<br>
-          <strong>9+</strong> = blocos bem marcados<br>
-          Use PNG + valores baixos para melhor resultado.
-        </div>
       </div>
       <div class="actions">
         <button class="btn secondary" id="reset">Resetar</button>
@@ -199,9 +203,8 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
   <div class="top"><div><h1>Configurações</h1></div></div>
   <div class="card">
     <p style="font-size:13px;color:#8e96a6;line-height:1.6">
-      Pixelização agora é <strong>nítida</strong> (sem blur).<br><br>
-      Valores baixos (2 a 5) mantêm a imagem com alta qualidade na visualização normal.<br>
-      No zoom forte os blocos aparecem e o detalhe da CTV some.
+      Camuflagem inspirada no estilo das ferramentas tipo <strong>Camufla Ads</strong>.<br><br>
+      Aplica micro-variações de pixel, ruído adaptativo e pequenas alterações por canal de cor. O resultado visual permanece quase idêntico, mas o arquivo fica único.
     </p>
   </div>
 </section>
@@ -316,7 +319,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       div.className = "ctvItem" + (item.canvas ? " processed" : "") + (item.processing ? " processing" : "");
       let src = item.img.src;
       if (item.canvas) {
-        try { src = item.canvas.toDataURL("image/jpeg", 0.7); } catch (e) {}
+        try { src = item.canvas.toDataURL("image/jpeg", 0.72); } catch (e) {}
       }
       div.innerHTML =
         (item.canvas ? '<span class="badge-proc">OK</span>' : "") +
@@ -365,16 +368,12 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     if (timer) { clearInterval(timer); timer = null; }
   }
 
-  ["mix","noise","bright","contrast","sat","sharp","blur","quality","pixel"].forEach(id => {
+  ["mix","noise","bright","contrast","sat","sharp","blur","quality"].forEach(id => {
     $(id).oninput = () => {
       const v = $(id).value;
-      if (id === "pixel") {
-        $("pixelV").textContent = v == 0 ? "Off" : v + "px";
-      } else {
-        $(id + "V").textContent =
-          (id === "mix" || id === "noise" || id === "sharp" || id === "quality") ? v + "%" :
-          id === "blur" ? v + "px" : v;
-      }
+      $(id + "V").textContent =
+        (id === "mix" || id === "noise" || id === "sharp" || id === "quality") ? v + "%" :
+        id === "blur" ? v + "px" : v;
     };
   });
 
@@ -425,7 +424,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("process").disabled = false;
     $("clearCtv").disabled = false;
     $("downloadAll").disabled = !state.ctvs.some(x => x.canvas);
-    setStatus("Concluído! <b>" + done + "</b> CTV(s) em <span class='timer'>" + sec + "s</span>");
+    setStatus("Concluído! <b>" + done + "</b> CTV(s) camufladas em <span class='timer'>" + sec + "s</span>");
     setTimeout(() => { $("progressWrap").style.display = "none"; }, 2200);
   };
 
@@ -499,7 +498,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       ctx.drawImage(c2, 0, 0);
     }
 
-    // 4. Noise + Sharp
+    // 4. Noise + Sharp manuais
     const noise = (+$("noise").value || 0) / 100;
     const sharp = (+$("sharp").value || 0) / 100;
     if (noise > 0 || sharp > 0) {
@@ -532,46 +531,68 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       ctx.putImageData(d, 0, 0);
     }
 
-    // 5. Pixelização NÍTIDA (anti-zoom)
-    const pixelSize = +$("pixel").value || 0;
-    if (pixelSize > 1) {
-      applySharpPixelate(ctx, w, h, pixelSize);
+    // 5. CAMUFLAGEM ESTILO CAMUFLA ADS
+    const camoLevel = +$("camoLevel").value || 0;
+    if (camoLevel > 0) {
+      applyCamouflage(ctx, w, h, camoLevel);
     }
 
     return c;
   }
 
-  // Pixelização nítida (sem média / sem blur)
-  function applySharpPixelate(ctx, w, h, size) {
+  /**
+   * Camuflagem inspirada no estilo Camufla Ads
+   * - Ruído sutil e diferente por canal
+   * - Micro-variações de pixel
+   * - Pequenas alterações de luminosidade local
+   * - Mantém qualidade visual alta
+   */
+  function applyCamouflage(ctx, w, h, level) {
     const imageData = ctx.getImageData(0, 0, w, h);
     const data = imageData.data;
-    const copy = new Uint8ClampedArray(data);
 
-    for (let y = 0; y < h; y += size) {
-      for (let x = 0; x < w; x += size) {
-        // Pega a cor do pixel do canto superior esquerdo do bloco
-        const sx = Math.min(x, w - 1);
-        const sy = Math.min(y, h - 1);
-        const si = (sy * w + sx) * 4;
-        const r = copy[si];
-        const g = copy[si + 1];
-        const b = copy[si + 2];
-        const a = copy[si + 3];
+    // Intensidade base por nível
+    // 1 = Básica | 2 = Normal | 3 = Agressiva
+    const strength = level === 1 ? 0.35 : level === 2 ? 0.65 : 1.0;
+    const noiseAmount = 4.2 * strength;      // ruído principal
+    const channelShift = 1.8 * strength;     // diferença entre canais
+    const microShift = 0.9 * strength;       // micro variação extra
 
-        const maxY = Math.min(y + size, h);
-        const maxX = Math.min(x + size, w);
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
 
-        for (let py = y; py < maxY; py++) {
-          for (let px = x; px < maxX; px++) {
-            const i = (py * w + px) * 4;
-            data[i] = r;
-            data[i + 1] = g;
-            data[i + 2] = b;
-            data[i + 3] = a;
-          }
-        }
+      // Ruído independente por canal (estilo profissional)
+      const nR = (Math.random() - 0.5) * noiseAmount;
+      const nG = (Math.random() - 0.5) * (noiseAmount * 0.85);
+      const nB = (Math.random() - 0.5) * noiseAmount;
+
+      // Pequeno deslocamento de canal (quebra hash/pixel pattern)
+      const shiftR = (Math.random() - 0.5) * channelShift;
+      const shiftG = (Math.random() - 0.5) * channelShift * 0.7;
+      const shiftB = (Math.random() - 0.5) * channelShift;
+
+      // Micro variação extra baseada na luminosidade do pixel
+      const lum = (r + g + b) / 3;
+      const micro = (Math.random() - 0.5) * microShift * (lum > 128 ? 1.1 : 0.9);
+
+      data[i]     = clamp(r + nR + shiftR + micro);
+      data[i + 1] = clamp(g + nG + shiftG + micro * 0.8);
+      data[i + 2] = clamp(b + nB + shiftB + micro);
+    }
+
+    // Segunda passagem leve (mais natural)
+    if (level >= 2) {
+      for (let i = 0; i < data.length; i += 4) {
+        if (Math.random() > 0.72) continue; // só em parte dos pixels
+        const extra = (Math.random() - 0.5) * 1.6 * strength;
+        data[i]     = clamp(data[i] + extra);
+        data[i + 1] = clamp(data[i + 1] + extra * 0.7);
+        data[i + 2] = clamp(data[i + 2] + extra);
       }
     }
+
     ctx.putImageData(imageData, 0, 0);
   }
 
@@ -634,10 +655,10 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("mix").value = 35;
     ["noise","bright","contrast","sat","sharp","blur"].forEach(id => $(id).value = 0);
     $("quality").value = 95;
-    $("pixel").value = 0;
     $("scale").value = "1";
     $("blendMode").value = "normal";
-    ["mix","noise","bright","contrast","sat","sharp","blur","quality","pixel"].forEach(id =>
+    $("camoLevel").value = "2";
+    ["mix","noise","bright","contrast","sat","sharp","blur","quality"].forEach(id =>
       $(id).dispatchEvent(new Event("input"))
     );
     state.ctvs.forEach(x => { x.canvas = null; x.processing = false; });
