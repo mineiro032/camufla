@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ImageLab — CTV Multi + Mistura White + Pixel Anti-Zoom</title>
+<title>ImageLab — CTV + Pixel Anti-Zoom Nítido</title>
 <style>
 :root{--bg:#090b10;--border:#292f3b;--text:#f5f7fb;--muted:#8e96a6;--accent:#705dfc;--accent2:#9185ff;--good:#37d39a}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#18152d 0,#090b10 45%);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh}
@@ -75,14 +75,14 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     <button data-page="history">🕘 Histórico</button>
     <button data-page="settings">⚙️ Configurações</button>
   </div>
-  <div class="note">Processamento 100% local. White se mistura nas CTVs.<br>Pixel anti-zoom disponível.</div>
+  <div class="note">Processamento 100% local.<br>Pixel anti-zoom nítido (sem blur).</div>
 </aside>
 <main>
 <section id="editor">
   <div class="top">
     <div>
       <h1>Editor CTV + Mistura White</h1>
-      <p>Até <strong>10 CTVs</strong> + 1 White que se mistura em cada uma.</p>
+      <p>Até <strong>10 CTVs</strong> + 1 White + Pixelização nítida anti-zoom</p>
     </div>
     <div class="badge">● Local</div>
   </div>
@@ -118,7 +118,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
           <div class="row"><span class="label">Intensidade da mistura</span><span class="value" id="mixV">35%</span></div>
           <input class="range" id="mix" type="range" min="0" max="100" value="35">
         </div>
-        <div class="hint">0% = só CTV · 50% = metade/metade · 100% = só White. A White é redimensionada para o tamanho de cada CTV e misturada pixel a pixel.</div>
+        <div class="hint">0% = só CTV · 50% = metade/metade · 100% = só White</div>
       </div>
       <div class="section">
         <div class="label">Modo de mistura</div>
@@ -131,7 +131,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
         </select>
       </div>
       <div class="section">
-        <div class="label">Ajustes visuais (depois da mistura)</div>
+        <div class="label">Ajustes visuais</div>
         <div class="control"><div class="row"><span class="label">Granulação</span><span class="value" id="noiseV">0%</span></div><input class="range" id="noise" type="range" min="0" max="100" value="0"></div>
         <div class="control"><div class="row"><span class="label">Brilho</span><span class="value" id="brightV">0</span></div><input class="range" id="bright" type="range" min="-100" max="100" value="0"></div>
         <div class="control"><div class="row"><span class="label">Contraste</span><span class="value" id="contrastV">0</span></div><input class="range" id="contrast" type="range" min="-100" max="100" value="0"></div>
@@ -152,19 +152,25 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       <div class="section">
         <div class="label">Exportação</div>
         <select class="select" id="format">
+          <option value="image/png">PNG (recomendado)</option>
           <option value="image/jpeg">JPG</option>
-          <option value="image/png">PNG</option>
           <option value="image/webp">WebP</option>
         </select>
         <div style="height:8px"></div>
-        <div class="row"><span class="label">Qualidade</span><span class="value" id="qualityV">90%</span></div>
-        <input class="range" id="quality" type="range" min="10" max="100" value="90">
-        <div style="height:12px"></div>
+        <div class="row"><span class="label">Qualidade</span><span class="value" id="qualityV">95%</span></div>
+        <input class="range" id="quality" type="range" min="10" max="100" value="95">
+        <div style="height:14px"></div>
         <div class="control">
-          <div class="row"><span class="label">Pixelização anti-zoom</span><span class="value" id="pixelV">Off</span></div>
-          <input class="range" id="pixel" type="range" min="0" max="32" value="0">
+          <div class="row"><span class="label">Tamanho do bloco (anti-zoom)</span><span class="value" id="pixelV">Off</span></div>
+          <input class="range" id="pixel" type="range" min="0" max="16" value="0">
         </div>
-        <div class="hint">0 = desligado. Valores altos transformam a imagem em blocos grandes. Na visualização normal a CTV aparece corretamente. No zoom extremo só se vê pixels/blocos (o detalhe da CTV some).</div>
+        <div class="hint">
+          <strong>0</strong> = desligado<br>
+          <strong>2~4</strong> = quase invisível (alta qualidade)<br>
+          <strong>5~8</strong> = blocos visíveis no zoom<br>
+          <strong>9+</strong> = blocos bem marcados<br>
+          Use PNG + valores baixos para melhor resultado.
+        </div>
       </div>
       <div class="actions">
         <button class="btn secondary" id="reset">Resetar</button>
@@ -192,8 +198,11 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
 <section class="settings" id="settingsPage">
   <div class="top"><div><h1>Configurações</h1></div></div>
   <div class="card">
-    <p style="font-size:13px;color:#8e96a6;line-height:1.6">Tudo roda no navegador. A White é misturada em cada CTV no momento do processamento.<br><br>
-    <strong>Pixelização anti-zoom:</strong> transforma a imagem em blocos. Na visualização normal a CTV continua legível. Quando você dá zoom forte, o detalhe some e só restam pixels.</p>
+    <p style="font-size:13px;color:#8e96a6;line-height:1.6">
+      Pixelização agora é <strong>nítida</strong> (sem blur).<br><br>
+      Valores baixos (2 a 5) mantêm a imagem com alta qualidade na visualização normal.<br>
+      No zoom forte os blocos aparecem e o detalhe da CTV some.
+    </p>
   </div>
 </section>
 </main>
@@ -216,6 +225,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
   let done = 0;
   let total = 0;
   let label = "";
+
   function setupDrop(box, input, multi) {
     box.onclick = () => input.click();
     ["dragenter","dragover"].forEach(ev => box.addEventListener(ev, e => { e.preventDefault(); box.classList.add("drag"); }));
@@ -232,9 +242,11 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
   }
   setupDrop($("dropA"), $("fileA"), true);
   setupDrop($("dropB"), $("fileB"), false);
+
   function okFile(f) {
     return f && /^image\/(jpeg|png|webp)$/i.test(f.type) && f.size <= 20 * 1024 * 1024;
   }
+
   function addCtvs(files) {
     if (state.busy) return;
     const list = files.filter(okFile);
@@ -267,6 +279,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       r.readAsDataURL(f);
     });
   }
+
   function addWhite(f) {
     if (state.busy) return;
     if (!okFile(f)) { setStatus("Arquivo inválido."); return; }
@@ -281,12 +294,13 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
         const clone = new Image();
         clone.src = img.src;
         box.appendChild(clone);
-        setStatus("White carregada — ela será misturada em cada CTV.");
+        setStatus("White carregada.");
       };
       img.src = r.result;
     };
     r.readAsDataURL(f);
   }
+
   function renderList() {
     const list = $("ctvList");
     $("ctvCount").textContent = state.ctvs.length + "/" + MAX;
@@ -302,7 +316,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       div.className = "ctvItem" + (item.canvas ? " processed" : "") + (item.processing ? " processing" : "");
       let src = item.img.src;
       if (item.canvas) {
-        try { src = item.canvas.toDataURL("image/jpeg", 0.65); } catch (e) {}
+        try { src = item.canvas.toDataURL("image/jpeg", 0.7); } catch (e) {}
       }
       div.innerHTML =
         (item.canvas ? '<span class="badge-proc">OK</span>' : "") +
@@ -328,7 +342,9 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     });
     $("downloadAll").disabled = state.busy || !state.ctvs.some(x => x.canvas);
   }
+
   function setStatus(t) { $("status").innerHTML = t; }
+
   function startTimer() {
     t0 = performance.now();
     $("progressWrap").style.display = "block";
@@ -344,9 +360,11 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
         "… <span class='timer'>" + sec + "s</span>");
     }, 100);
   }
+
   function stopTimer() {
     if (timer) { clearInterval(timer); timer = null; }
   }
+
   ["mix","noise","bright","contrast","sat","sharp","blur","quality","pixel"].forEach(id => {
     $(id).oninput = () => {
       const v = $(id).value;
@@ -359,6 +377,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       }
     };
   });
+
   $("process").onclick = async () => {
     if (state.busy) return;
     const ctvs = state.ctvs.slice();
@@ -371,7 +390,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     }
     const mixPct = +$("mix").value || 0;
     if (mixPct > 0 && !state.white) {
-      setStatus("Para misturar, carregue também a imagem White (ou deixe Mistura em 0%).");
+      setStatus("Para misturar, carregue a White (ou deixe Mistura em 0%).");
       return;
     }
     state.busy = true;
@@ -379,13 +398,14 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("downloadAll").disabled = true;
     $("clearCtv").disabled = true;
     startTimer();
-    await wait(50);
+    await wait(40);
+
     for (let i = 0; i < ctvs.length; i++) {
       const item = ctvs[i];
       label = item.name || ("CTV " + (i + 1));
       item.processing = true;
       renderList();
-      await wait(30);
+      await wait(20);
       try {
         item.canvas = processOne(item.img, state.white, mixPct);
       } catch (err) {
@@ -395,8 +415,9 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       item.processing = false;
       done++;
       renderList();
-      await wait(20);
+      await wait(15);
     }
+
     const sec = ((performance.now() - t0) / 1000).toFixed(1);
     stopTimer();
     $("progressBar").style.width = "100%";
@@ -404,20 +425,14 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("process").disabled = false;
     $("clearCtv").disabled = false;
     $("downloadAll").disabled = !state.ctvs.some(x => x.canvas);
-    setStatus("Concluído! <b>" + done + "</b> CTV(s) misturadas em <span class='timer'>" + sec + "s</span>");
-    setTimeout(() => { $("progressWrap").style.display = "none"; }, 2500);
+    setStatus("Concluído! <b>" + done + "</b> CTV(s) em <span class='timer'>" + sec + "s</span>");
+    setTimeout(() => { $("progressWrap").style.display = "none"; }, 2200);
   };
+
   function wait(ms) {
     return new Promise(r => setTimeout(r, ms));
   }
-  /**
-   * Processa 1 CTV:
-   * 1. Redimensiona
-   * 2. Mistura com White (se houver)
-   * 3. Aplica filtros (brilho, contraste, etc.)
-   * 4. Granulação / nitidez
-   * 5. Pixelização anti-zoom (se ativada)
-   */
+
   function processOne(ctvImg, whiteImg, mixPct) {
     if (!ctvImg || !ctvImg.naturalWidth) throw new Error("CTV inválida");
     const scale = parseFloat($("scale").value) || 1;
@@ -427,9 +442,11 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     c.width = w;
     c.height = h;
     const ctx = c.getContext("2d", { willReadFrequently: true });
-    // 1) Desenha a CTV
+
+    // 1. CTV
     ctx.drawImage(ctvImg, 0, 0, w, h);
-    // 2) Mistura a White por cima
+
+    // 2. Mistura White
     if (whiteImg && whiteImg.naturalWidth && mixPct > 0) {
       const alpha = mixPct / 100;
       const mode = $("blendMode").value || "normal";
@@ -438,6 +455,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       tmp.height = h;
       const tctx = tmp.getContext("2d");
       tctx.drawImage(whiteImg, 0, 0, w, h);
+
       if (mode === "normal") {
         ctx.globalAlpha = alpha;
         ctx.drawImage(tmp, 0, 0);
@@ -456,9 +474,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
             else if (mode === "screen") r = 1 - (1 - a) * (1 - b);
             else if (mode === "overlay") r = a < 0.5 ? 2 * a * b : 1 - 2 * (1 - a) * (1 - b);
             else if (mode === "soft-light") {
-              r = b < 0.5
-                ? a - (1 - 2 * b) * a * (1 - a)
-                : a + (2 * b - 1) * (Math.sqrt(a) - a);
+              r = b < 0.5 ? a - (1 - 2 * b) * a * (1 - a) : a + (2 * b - 1) * (Math.sqrt(a) - a);
             } else r = b;
             bp[i + k] = Math.round((a * (1 - alpha) + r * alpha) * 255);
           }
@@ -466,7 +482,8 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
         ctx.putImageData(base, 0, 0);
       }
     }
-    // 3) Filtros CSS (brilho, contraste, saturação, blur)
+
+    // 3. Filtros
     const blur = parseFloat($("blur").value) || 0;
     const br = 100 + (+$("bright").value || 0);
     const ct = 100 + (+$("contrast").value || 0);
@@ -476,12 +493,13 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       c2.width = w;
       c2.height = h;
       const ctx2 = c2.getContext("2d");
-      ctx2.filter = "blur(" + blur + "px) brightness(" + br + "%) contrast(" + ct + "%) saturate(" + sa + "%)";
+      ctx2.filter = `blur(${blur}px) brightness(${br}%) contrast(${ct}%) saturate(${sa}%)`;
       ctx2.drawImage(c, 0, 0);
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(c2, 0, 0);
     }
-    // 4) Granulação + nitidez
+
+    // 4. Noise + Sharp
     const noise = (+$("noise").value || 0) / 100;
     const sharp = (+$("sharp").value || 0) / 100;
     if (noise > 0 || sharp > 0) {
@@ -490,7 +508,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       if (noise > 0) {
         for (let i = 0; i < p.length; i += 4) {
           const n = noise * (Math.random() - 0.5) * 255;
-          p[i]     = clamp(p[i] + n);
+          p[i] = clamp(p[i] + n);
           p[i + 1] = clamp(p[i + 1] + n);
           p[i + 2] = clamp(p[i + 2] + n);
         }
@@ -513,36 +531,36 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       }
       ctx.putImageData(d, 0, 0);
     }
-    // 5) Pixelização anti-zoom
+
+    // 5. Pixelização NÍTIDA (anti-zoom)
     const pixelSize = +$("pixel").value || 0;
     if (pixelSize > 1) {
-      applyPixelate(ctx, w, h, pixelSize);
+      applySharpPixelate(ctx, w, h, pixelSize);
     }
+
     return c;
   }
-  function applyPixelate(ctx, w, h, size) {
+
+  // Pixelização nítida (sem média / sem blur)
+  function applySharpPixelate(ctx, w, h, size) {
     const imageData = ctx.getImageData(0, 0, w, h);
     const data = imageData.data;
+    const copy = new Uint8ClampedArray(data);
+
     for (let y = 0; y < h; y += size) {
       for (let x = 0; x < w; x += size) {
-        let r = 0, g = 0, b = 0, a = 0, count = 0;
+        // Pega a cor do pixel do canto superior esquerdo do bloco
+        const sx = Math.min(x, w - 1);
+        const sy = Math.min(y, h - 1);
+        const si = (sy * w + sx) * 4;
+        const r = copy[si];
+        const g = copy[si + 1];
+        const b = copy[si + 2];
+        const a = copy[si + 3];
+
         const maxY = Math.min(y + size, h);
         const maxX = Math.min(x + size, w);
-        for (let py = y; py < maxY; py++) {
-          for (let px = x; px < maxX; px++) {
-            const i = (py * w + px) * 4;
-            r += data[i];
-            g += data[i + 1];
-            b += data[i + 2];
-            a += data[i + 3];
-            count++;
-          }
-        }
-        if (count === 0) continue;
-        r = Math.round(r / count);
-        g = Math.round(g / count);
-        b = Math.round(b / count);
-        a = Math.round(a / count);
+
         for (let py = y; py < maxY; py++) {
           for (let px = x; px < maxX; px++) {
             const i = (py * w + px) * 4;
@@ -556,13 +574,15 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     }
     ctx.putImageData(imageData, 0, 0);
   }
+
   function clamp(v) {
     return v < 0 ? 0 : v > 255 ? 255 : v | 0;
   }
+
   function doDownload(canvas, name) {
     if (!canvas) return;
-    const type = $("format").value || "image/jpeg";
-    const q = (+$("quality").value || 90) / 100;
+    const type = $("format").value || "image/png";
+    const q = (+$("quality").value || 95) / 100;
     canvas.toBlob(blob => {
       if (!blob) return;
       const a = document.createElement("a");
@@ -575,25 +595,28 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }, type, q);
   }
+
   $("downloadAll").onclick = () => {
     const items = state.ctvs.filter(x => x.canvas);
     if (!items.length) return;
     items.forEach((item, i) => setTimeout(() => doDownload(item.canvas, item.name), i * 250));
     setStatus("Baixando " + items.length + " CTV(s)…");
   };
+
   $("clearCtv").onclick = () => {
     if (state.busy) return;
     state.ctvs = [];
     renderList();
     setStatus("CTVs limpas.");
   };
+
   $("save").onclick = () => {
     let n = 0;
     state.ctvs.forEach(item => {
       if (!item.canvas) return;
       try {
         history.unshift({
-          src: item.canvas.toDataURL("image/jpeg", 0.8),
+          src: item.canvas.toDataURL("image/jpeg", 0.85),
           name: item.name + " — CTV",
           date: new Date().toLocaleString("pt-BR")
         });
@@ -605,11 +628,12 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     localStorage.setItem("imagelab_history_v2", JSON.stringify(history));
     setStatus(n + " salvo(s) no histórico.");
   };
+
   $("reset").onclick = () => {
     if (state.busy) return;
     $("mix").value = 35;
     ["noise","bright","contrast","sat","sharp","blur"].forEach(id => $(id).value = 0);
-    $("quality").value = 90;
+    $("quality").value = 95;
     $("pixel").value = 0;
     $("scale").value = "1";
     $("blendMode").value = "normal";
@@ -621,6 +645,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("progressWrap").style.display = "none";
     setStatus("Ajustes resetados.");
   };
+
   document.querySelectorAll(".nav button").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
