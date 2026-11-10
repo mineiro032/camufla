@@ -62,6 +62,32 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
 .historyList{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
 .hist{background:#12151d;border:1px solid var(--border);border-radius:12px;padding:10px}
 .hist img{width:100%;height:140px;object-fit:cover;border-radius:8px}.hist div{font-size:11px;color:#8e96a6;margin-top:8px}
+
+/* ===== NOVOS ESTILOS DOS MODOS AVANÇADOS ===== */
+.camo-modes{display:grid;gap:8px;margin-top:10px}
+.camo-mode{
+  display:flex;align-items:flex-start;gap:10px;
+  background:#0d1016;border:1px solid #2a3040;
+  border-radius:12px;padding:10px 12px;cursor:pointer;
+  transition:all .18s ease;user-select:none;
+}
+.camo-mode:hover{border-color:#3d465c;background:#12151e}
+.camo-mode.active{
+  border-color:#705dfc;
+  background:linear-gradient(135deg,rgba(112,93,252,.12),rgba(145,133,255,.06));
+  box-shadow:0 0 0 1px rgba(112,93,252,.25);
+}
+.camo-mode .icon{
+  width:28px;height:28px;border-radius:8px;
+  background:#1a1f2e;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:14px;
+}
+.camo-mode.active .icon{background:#705dfc;color:#fff}
+.camo-mode .info{flex:1;min-width:0}
+.camo-mode .title{font-size:12px;font-weight:700;color:#e8ecf4;margin-bottom:2px}
+.camo-mode .desc{font-size:10px;color:#7a8499;line-height:1.35}
+.camo-mode input{display:none}
+
 @media(max-width:1000px){.sidebar{display:none}main{margin-left:0}.grid{grid-template-columns:1fr}}
 @media(max-width:650px){.uploads{grid-template-columns:1fr}}
 </style>
@@ -130,7 +156,7 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
         </select>
       </div>
 
-      <!-- CAMUFLAGEM ESTILO CAMUFLA ADS -->
+      <!-- ===== CAMUFLAGEM ===== -->
       <div class="section">
         <div class="label">Camuflagem (estilo Camufla Ads)</div>
         <select class="select" id="camoLevel">
@@ -143,6 +169,48 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
           <strong>Básica</strong> → alterações mínimas<br>
           <strong>Normal</strong> → equilíbrio (recomendado)<br>
           <strong>Agressiva</strong> → mudanças mais fortes nos pixels
+        </div>
+
+        <!-- ===== NOVOS MODOS AVANÇADOS ===== -->
+        <div class="label" style="margin-top:16px;margin-bottom:6px">Modos Avançados</div>
+        <div class="camo-modes">
+
+          <label class="camo-mode" id="modeUltra">
+            <input type="checkbox" id="ultraAggressive">
+            <div class="icon">⚡</div>
+            <div class="info">
+              <div class="title">Ultra Aggressive Mode</div>
+              <div class="desc">Recomendado para nichos adultos +18. Blend máximo + compressão tripla.</div>
+            </div>
+          </label>
+
+          <label class="camo-mode" id="modeNeuro">
+            <input type="checkbox" id="neuroIA">
+            <div class="icon">🔄</div>
+            <div class="info">
+              <div class="title">Randomização Neuro-IA</div>
+              <div class="desc">Usa padrões adversariais para gerar pixels únicos e indetectáveis.</div>
+            </div>
+          </label>
+
+          <label class="camo-mode" id="modeAnti">
+            <input type="checkbox" id="antiIA">
+            <div class="icon">🛡️</div>
+            <div class="info">
+              <div class="title">Anti-IA Facebook</div>
+              <div class="desc">Perturbações estruturadas contra redes neurais.</div>
+            </div>
+          </label>
+
+          <label class="camo-mode" id="modeUnique">
+            <input type="checkbox" id="uniqueImgs">
+            <div class="icon">🖼️</div>
+            <div class="info">
+              <div class="title">Imagens Únicas</div>
+              <div class="desc">Gera variações extras para evitar duplicatas.</div>
+            </div>
+          </label>
+
         </div>
       </div>
 
@@ -228,6 +296,15 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
   let done = 0;
   let total = 0;
   let label = "";
+
+  // ===== Toggle visual dos modos =====
+  ["ultraAggressive","neuroIA","antiIA","uniqueImgs"].forEach(id => {
+    const input = $(id);
+    const card = input.closest(".camo-mode");
+    const update = () => card.classList.toggle("active", input.checked);
+    input.addEventListener("change", update);
+    update();
+  });
 
   function setupDrop(box, input, multi) {
     box.onclick = () => input.click();
@@ -398,7 +475,6 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("clearCtv").disabled = true;
     startTimer();
     await wait(40);
-
     for (let i = 0; i < ctvs.length; i++) {
       const item = ctvs[i];
       label = item.name || ("CTV " + (i + 1));
@@ -416,7 +492,6 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       renderList();
       await wait(15);
     }
-
     const sec = ((performance.now() - t0) / 1000).toFixed(1);
     stopTimer();
     $("progressBar").style.width = "100%";
@@ -454,7 +529,6 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       tmp.height = h;
       const tctx = tmp.getContext("2d");
       tctx.drawImage(whiteImg, 0, 0, w, h);
-
       if (mode === "normal") {
         ctx.globalAlpha = alpha;
         ctx.drawImage(tmp, 0, 0);
@@ -531,65 +605,190 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
       ctx.putImageData(d, 0, 0);
     }
 
-    // 5. CAMUFLAGEM ESTILO CAMUFLA ADS
+    // 5. CAMUFLAGEM BASE
     const camoLevel = +$("camoLevel").value || 0;
     if (camoLevel > 0) {
       applyCamouflage(ctx, w, h, camoLevel);
+    }
+
+    // 6. MODOS AVANÇADOS
+    const ultra = $("ultraAggressive").checked;
+    const neuro = $("neuroIA").checked;
+    const anti  = $("antiIA").checked;
+    const unique = $("uniqueImgs").checked;
+
+    if (ultra || neuro || anti || unique) {
+      applyAdvancedCamo(ctx, w, h, { ultra, neuro, anti, unique, camoLevel });
     }
 
     return c;
   }
 
   /**
-   * Camuflagem inspirada no estilo Camufla Ads
-   * - Ruído sutil e diferente por canal
-   * - Micro-variações de pixel
-   * - Pequenas alterações de luminosidade local
-   * - Mantém qualidade visual alta
+   * Camuflagem base (já existia)
    */
   function applyCamouflage(ctx, w, h, level) {
     const imageData = ctx.getImageData(0, 0, w, h);
     const data = imageData.data;
-
-    // Intensidade base por nível
-    // 1 = Básica | 2 = Normal | 3 = Agressiva
     const strength = level === 1 ? 0.35 : level === 2 ? 0.65 : 1.0;
-    const noiseAmount = 4.2 * strength;      // ruído principal
-    const channelShift = 1.8 * strength;     // diferença entre canais
-    const microShift = 0.9 * strength;       // micro variação extra
+    const noiseAmount = 4.2 * strength;
+    const channelShift = 1.8 * strength;
+    const microShift = 0.9 * strength;
 
     for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      // Ruído independente por canal (estilo profissional)
+      const r = data[i], g = data[i+1], b = data[i+2];
       const nR = (Math.random() - 0.5) * noiseAmount;
       const nG = (Math.random() - 0.5) * (noiseAmount * 0.85);
       const nB = (Math.random() - 0.5) * noiseAmount;
-
-      // Pequeno deslocamento de canal (quebra hash/pixel pattern)
       const shiftR = (Math.random() - 0.5) * channelShift;
       const shiftG = (Math.random() - 0.5) * channelShift * 0.7;
       const shiftB = (Math.random() - 0.5) * channelShift;
-
-      // Micro variação extra baseada na luminosidade do pixel
       const lum = (r + g + b) / 3;
       const micro = (Math.random() - 0.5) * microShift * (lum > 128 ? 1.1 : 0.9);
-
       data[i]     = clamp(r + nR + shiftR + micro);
       data[i + 1] = clamp(g + nG + shiftG + micro * 0.8);
       data[i + 2] = clamp(b + nB + shiftB + micro);
     }
 
-    // Segunda passagem leve (mais natural)
     if (level >= 2) {
       for (let i = 0; i < data.length; i += 4) {
-        if (Math.random() > 0.72) continue; // só em parte dos pixels
+        if (Math.random() > 0.72) continue;
         const extra = (Math.random() - 0.5) * 1.6 * strength;
         data[i]     = clamp(data[i] + extra);
         data[i + 1] = clamp(data[i + 1] + extra * 0.7);
         data[i + 2] = clamp(data[i + 2] + extra);
+      }
+    }
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  /**
+   * ===== MODOS AVANÇADOS =====
+   * Ultra Aggressive + Randomização Neuro-IA + Anti-IA Facebook + Imagens Únicas
+   */
+  function applyAdvancedCamo(ctx, w, h, opts) {
+    const { ultra, neuro, anti, unique, camoLevel } = opts;
+    const imageData = ctx.getImageData(0, 0, w, h);
+    const data = imageData.data;
+    const strength = camoLevel === 0 ? 0.5 : (camoLevel === 1 ? 0.6 : camoLevel === 2 ? 0.85 : 1.15);
+
+    // ---------- 1. ULTRA AGGRESSIVE MODE ----------
+    // Blend máximo + compressão tripla (simula múltiplas passagens de quantização)
+    if (ultra) {
+      // Passagem 1: quantização forte por canal
+      for (let i = 0; i < data.length; i += 4) {
+        data[i]     = Math.round(data[i]     / 3) * 3 + (Math.random() > 0.5 ? 1 : -1);
+        data[i + 1] = Math.round(data[i + 1] / 3) * 3 + (Math.random() > 0.5 ? 1 : -1);
+        data[i + 2] = Math.round(data[i + 2] / 3) * 3 + (Math.random() > 0.5 ? 1 : -1);
+      }
+      // Passagem 2: micro-dithering agressivo
+      for (let i = 0; i < data.length; i += 4) {
+        if (Math.random() < 0.35) {
+          const q = (Math.random() - 0.5) * 8 * strength;
+          data[i]     = clamp(data[i] + q);
+          data[i + 1] = clamp(data[i + 1] + q * 0.85);
+          data[i + 2] = clamp(data[i + 2] + q);
+        }
+      }
+      // Passagem 3: pequena compressão de faixa dinâmica
+      for (let i = 0; i < data.length; i += 4) {
+        data[i]     = clamp(data[i]     * 0.97 + 4);
+        data[i + 1] = clamp(data[i + 1] * 0.97 + 4);
+        data[i + 2] = clamp(data[i + 2] * 0.97 + 4);
+      }
+    }
+
+    // ---------- 2. RANDOMIZAÇÃO NEURO-IA ----------
+    // Padrões adversariais (ruído estruturado + frequência espacial)
+    if (neuro) {
+      // Ruído de alta frequência com padrão pseudo-periódico
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          // padrão adversarial simples (seno + ruído)
+          const freq = 0.08 + Math.random() * 0.04;
+          const phase = (x * 0.17 + y * 0.13) * freq;
+          const adv = Math.sin(phase * Math.PI * 2) * 3.2 * strength;
+          const noise = (Math.random() - 0.5) * 2.8 * strength;
+
+          data[i]     = clamp(data[i]     + adv + noise);
+          data[i + 1] = clamp(data[i + 1] + adv * 0.7 + noise * 0.9);
+          data[i + 2] = clamp(data[i + 2] + adv * 1.1 + noise);
+        }
+      }
+      // Segunda camada: perturbação local em blocos 4x4
+      for (let by = 0; by < h; by += 4) {
+        for (let bx = 0; bx < w; bx += 4) {
+          const blockNoise = (Math.random() - 0.5) * 4.5 * strength;
+          for (let dy = 0; dy < 4 && by + dy < h; dy++) {
+            for (let dx = 0; dx < 4 && bx + dx < w; dx++) {
+              const i = ((by + dy) * w + (bx + dx)) * 4;
+              data[i]     = clamp(data[i] + blockNoise);
+              data[i + 1] = clamp(data[i + 1] + blockNoise * 0.8);
+              data[i + 2] = clamp(data[i + 2] + blockNoise);
+            }
+          }
+        }
+      }
+    }
+
+    // ---------- 3. ANTI-IA FACEBOOK ----------
+    // Perturbações estruturadas pensadas para redes neurais (edge + frequência)
+    if (anti) {
+      // Detecção simples de bordas + ruído direcionado
+      const copy = new Uint8ClampedArray(data);
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const i = (y * w + x) * 4;
+          // gradiente aproximado
+          const gx = (copy[((y)*w+(x+1))*4] - copy[((y)*w+(x-1))*4]);
+          const gy = (copy[((y+1)*w+x)*4] - copy[((y-1)*w+x)*4]);
+          const edge = Math.sqrt(gx*gx + gy*gy) / 255;
+
+          // mais perturbação em áreas de alta frequência (bordas)
+          const strengthEdge = (0.4 + edge * 2.2) * strength;
+          const n = (Math.random() - 0.5) * 5.5 * strengthEdge;
+
+          data[i]     = clamp(data[i] + n);
+          data[i + 1] = clamp(data[i + 1] + n * 0.75);
+          data[i + 2] = clamp(data[i + 2] + n * 1.05);
+        }
+      }
+      // Pequena rotação de canal em pixels aleatórios (quebra features)
+      for (let i = 0; i < data.length; i += 4) {
+        if (Math.random() < 0.018 * strength) {
+          const tmp = data[i];
+          data[i] = data[i + 1];
+          data[i + 1] = data[i + 2];
+          data[i + 2] = tmp;
+        }
+      }
+    }
+
+    // ---------- 4. IMAGENS ÚNICAS ----------
+    // Variações extras para evitar detecção de duplicatas (hash perceptual)
+    if (unique) {
+      // Micro-offset espacial aleatório (1px em algumas linhas)
+      for (let y = 0; y < h; y++) {
+        if (Math.random() < 0.07) {
+          const shift = Math.random() < 0.5 ? 1 : -1;
+          for (let x = 0; x < w - 1; x++) {
+            const i = (y * w + x) * 4;
+            const j = (y * w + (x + shift)) * 4;
+            if (j >= 0 && j < data.length - 3) {
+              data[i]     = data[j];
+              data[i + 1] = data[j + 1];
+              data[i + 2] = data[j + 2];
+            }
+          }
+        }
+      }
+      // Variação de luminância global muito sutil + ruído residual
+      const globalBias = (Math.random() - 0.5) * 2.8 * strength;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i]     = clamp(data[i] + globalBias + (Math.random() - 0.5) * 1.4);
+        data[i + 1] = clamp(data[i + 1] + globalBias * 0.9 + (Math.random() - 0.5) * 1.2);
+        data[i + 2] = clamp(data[i + 2] + globalBias + (Math.random() - 0.5) * 1.4);
       }
     }
 
@@ -658,6 +857,11 @@ main{margin-left:245px;flex:1;padding:30px;max-width:1500px}
     $("scale").value = "1";
     $("blendMode").value = "normal";
     $("camoLevel").value = "2";
+    // desmarca os modos avançados
+    ["ultraAggressive","neuroIA","antiIA","uniqueImgs"].forEach(id => {
+      $(id).checked = false;
+      $(id).closest(".camo-mode").classList.remove("active");
+    });
     ["mix","noise","bright","contrast","sat","sharp","blur","quality"].forEach(id =>
       $(id).dispatchEvent(new Event("input"))
     );
